@@ -1,0 +1,14 @@
+{
+    "name": "mii",
+    "version": "0.0.3",
+    "description": "helper",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Just4Fun <tranhoangnhat5683@gmail.com>",
+    "license": "ISC",
+    "devDependencies": {
+        "deasync": "latest"
+    }
+}
