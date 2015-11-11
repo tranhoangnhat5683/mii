@@ -208,6 +208,11 @@ ArrayHelper.sortDescByProperty = function(arr, property)
 
 ArrayHelper.searchByProperty = function(arr, value, property)
 {
+    return ArrayHelper.search(arr, property, value);
+};
+
+ArrayHelper.search = function(arr, property, value)
+{
     for (var i = 0; i < arr.length; i++)
     {
         if (arr[i][property] === value)
