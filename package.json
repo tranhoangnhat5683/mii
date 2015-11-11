@@ -1,6 +1,6 @@
 {
     "name": "mii",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "description": "helper",
     "main": "index.js",
     "scripts": {
@@ -8,7 +8,7 @@
     },
     "author": "Just4Fun <tranhoangnhat5683@gmail.com>",
     "license": "ISC",
-    "devDependencies": {
+    "dependencies": {
         "deasync": "latest"
     }
 }
