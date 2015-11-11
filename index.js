@@ -1,9 +1,16 @@
 module.exports = function() {
-    var deasync = require('deasync');
-    var Helper_Function = require('./Function');
+    var Function = require('./Function');
+    var String = require('./String');
+    var Object = require('./Object');
+    var Array = require('./Array');
+    var Regex = require('./Regex');
 
     var Mii = {
-        Function: Helper_Function
+        Function: Function,
+        Regex: Regex,
+        Array: Array,
+        Object: Object,
+        String: String
     };
 
     return Mii;
