@@ -222,6 +222,8 @@ ArrayHelper.sort = function(arr, property, order, options)
             return 0;
         }
     );
+
+    return arr;
 };
 
 ArrayHelper.sortDescByProperty = function(arr, property)
