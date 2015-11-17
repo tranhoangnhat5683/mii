@@ -186,6 +186,44 @@ ArrayHelper.pushInDescOrder = function(arr, element, property)
     arr.push(element);
 };
 
+ArrayHelper.sort = function(arr, property, order, options)
+{
+    if (!order)
+    {
+        order = 'asc';
+    }
+
+    var left = 0;
+    var right = 0;
+    switch (order){
+        case 'asc':
+            left = -1;
+            right = 1;
+            break;
+        case 'desc':
+            left = 1;
+            right = -1;
+            break;
+    }
+
+    arr.sort(
+        function(a, b)
+        {
+            if (a[property] < b[property])
+            {
+                return left;
+            }
+
+            if (a[property] > b[property])
+            {
+                return right;
+            }
+
+            return 0;
+        }
+    );
+};
+
 ArrayHelper.sortDescByProperty = function(arr, property)
 {
     arr.sort(
