@@ -25,24 +25,6 @@ var ArrayHelper = function()
 
 };
 
-ArrayHelper.tryCatchArray = function(data)
-{
-    if( !data )
-    {
-        return [];
-    }
-    var results = null;
-    try{
-        results     = JSON.parse(data);
-    }
-    catch(e)
-    {
-        console.log('PARSE ERROR: ', e);
-        results = [];
-    }
-    return results;
-};
-
 ArrayHelper.clean = function(arr)
 {
     var newArr = [];
@@ -86,41 +68,6 @@ ArrayHelper.unique = function(arr, arrProperty)
     return objectHelper().objectToArray(unique);
 };
 
-ArrayHelper.removeDuplicates = function(arr, arrProperty)
-{
-    return arr.filter(
-        function(elem, pos) {
-            return arr.indexOf(elem) === pos;
-        }
-    );
-};
-
-/**
- * Remove duplicate element from array. Duplicate element detect by it property
- * list in arrProperty
- * @param {Array} arr
- * @param {String|Array} arrProperty
- * @returns {Array}
- * @deprecated Since 3/4/2015. Please use unique(arr, arrProperty) instead.
- */
-ArrayHelper.removeDuplicatesByObjectProperty = function(arr, arrProperty)
-{
-    return ArrayHelper.unique(arr, arrProperty);
-};
-
-/**
- * 
- * @param {Array} arr
- * @param {String} prop
- * @param {Object} options
- * @returns {String}
- * @deprecated Since 16/4/2015. Please use get(arr, prop, options) instead.
- */
-ArrayHelper.createNewArrayFromObjectProperty = function(arr, prop, options)
-{
-    return ArrayHelper.get(arr, prop, options);
-};
-
 ArrayHelper.get = function(arr, prop, options)
 {
     if (!options)
@@ -139,19 +86,6 @@ ArrayHelper.get = function(arr, prop, options)
     }
 
     return newArr;
-};
-
-/**
- * Create a string by join object value of the object in array.
- * @param {Array} arr
- * @param {String} prop
- * @param {Object} options
- * @returns {String}
- * @deprecated Since 16/4/2015. Please use join(arr, prop, options) instead.
- */
-ArrayHelper.joinByObjectProperty = function(arr, prop, options)
-{
-    return ArrayHelper.join(arr, prop, options);
 };
 
 ArrayHelper.join = function(arr, prop, options)
@@ -226,31 +160,6 @@ ArrayHelper.sort = function(arr, property, order, options)
     return arr;
 };
 
-ArrayHelper.sortDescByProperty = function(arr, property)
-{
-    arr.sort(
-        function(a, b)
-        {
-            if (a[property] < b[property])
-            {
-                return 1;
-            }
-
-            if (a[property] > b[property])
-            {
-                return -1;
-            }
-
-            return 0;
-        }
-    );
-};
-
-ArrayHelper.searchByProperty = function(arr, value, property)
-{
-    return ArrayHelper.search(arr, property, value);
-};
-
 ArrayHelper.search = function(arr, property, value)
 {
     for (var i = 0; i < arr.length; i++)
@@ -264,19 +173,21 @@ ArrayHelper.search = function(arr, property, value)
     return false;
 };
 
-/*
- * ??? Ham nay de lam gi day?
- */
-ArrayHelper.arrayToObject = function(arr, properties)
+ArrayHelper.toObjectKey = function(arr, properties)
 {
     var result = {};
-    if (!properties)
+    for (var i = 0; i < arr.length; i++)
     {
-        for (var i = 0; i < arr.length; i++)
+        if (!properties)
         {
             result[arr[i]] = arr[i];
         }
+        else
+        {
+            result[arr[i][properties]] = arr[i];
+        }
     }
+
     return result;
 };
 
@@ -332,26 +243,6 @@ ArrayHelper.compare = function(left, right, properties)
     }
 
     return result;
-};
-
-ArrayHelper.getArrayValuesByKey = function(arrObject, key)
-{
-    var arrResult = [];
-    for(var i = 0; i < arrObject.length; i++)
-    {
-        arrResult.push(arrObject[i][key]);
-    }
-    return arrResult;
-};
-
-ArrayHelper.generateMapperByKey = function(arrObject, key)
-{
-    var mapper      = {};
-    for(var i = 0; i < arrObject.length; i++)
-    {
-        mapper[arrObject[i][key]] = arrObject[i];
-    }
-    return mapper;
 };
 
 function buildKey(item, properties)

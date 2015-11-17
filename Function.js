@@ -17,68 +17,44 @@ function toSyncMode(object, arrProperty, wrapper)
         // use getter to wrap function in wrapper
         object.__defineGetter__(
             arrProperty[i],
-            wrapper(object[arrProperty[i]])
-            );
+            getter(object[arrProperty[i]], wrapper)
+        );
     }
 
     return object;
 }
 
-// wrap function in a getter that return a wrapper that will execute fn.
-function wrapperErrRes(fn)
+function getter(fn, wrapper)
 {
-    // function getter
     return function() {
-        // wrapper function (fn is the real function)
         return function() {
             var result = null;
             var args = Array.prototype.slice.call(arguments, 0); // clone arguments to array
-            args.push(function(err, res) { // add callback to the end of args
-                result = {
-                    err: err,
-                    res: res
-                };
-            });
-
-            // call function
+            args.push(wrapper.bind(null, function(data) {
+                result = data;
+            }));
             fn.apply(this, args);
 
-            // wait for callback to return result
             while (!result) {
                 deasync.runLoopOnce();
             }
 
-            // return result.
             return result;
         };
     };
 }
 
-// wrap function in a getter that return a wrapper that will execute fn.
-function wrapperRes(fn)
+function wrapperErrRes(callback, err, res)
 {
-    // function getter
-    return function() {
-        // wrapper function (fn is the real function)
-        return function() {
-            var result = null;
-            var args = Array.prototype.slice.call(arguments, 0); // clone arguments to array
-            args.push(function(res) { // add callback to the end of args
-                result = res;
-            });
+    callback({
+        err: err,
+        res: res
+    });
+}
 
-            // call function
-            fn.apply(this, args);
-
-            // wait for callback to return result
-            while (!result) {
-                deasync.runLoopOnce();
-            }
-
-            // return result.
-            return result;
-        };
-    };
+function wrapperRes(callback, res)
+{
+    callback(res);
 }
 
 module.exports = {
