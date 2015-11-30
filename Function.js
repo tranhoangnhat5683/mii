@@ -29,6 +29,7 @@ function getter(fn, wrapper)
     return function() {
         return function() {
             var result = null;
+            // https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Functions/arguments
             var args = Array.prototype.slice.call(arguments, 0); // clone arguments to array
             args.push(wrapper.bind(null, function(data) {
                 result = data;

@@ -191,6 +191,24 @@ ArrayHelper.toObjectKey = function(arr, properties)
     return result;
 };
 
+ArrayHelper.group = function(arr, properties)
+{
+    var result = {};
+    var item = null;
+    for (var i = 0; i < arr.length; i++)
+    {
+        item = arr[i];
+        if (!result[item[properties]])
+        {
+            result[item[properties]] = [];
+        }
+
+        result[item[properties]].push(item);
+    }
+
+    return result;
+};
+
 /*
  * Compare two array.
  * @param {Array} left
