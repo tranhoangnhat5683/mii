@@ -1,65 +1,77 @@
-var deasync = require('deasync');
+module.exports = function() {
+    var deasync = require('deasync');
 
-function toSyncMode(object, arrProperty, wrapper)
-{
-    if (!wrapper)
+    var Helper_Function = {};
+    Helper_Function.toSyncMode = function(object, arrProperty, wrapper)
     {
-        wrapper = wrapperErrRes;
-    }
-
-    for (var i = 0; i < arrProperty.length; i++)
-    {
-        if (!(object[arrProperty[i]] instanceof Function))
+        if (!wrapper)
         {
-            throw new Error('param is not a function');
+            wrapper = wrapperErrRes;
         }
 
-        // use getter to wrap function in wrapper
-        object.__defineGetter__(
-            arrProperty[i],
-            getter(object[arrProperty[i]], wrapper)
-        );
-    }
-
-    return object;
-}
-
-function getter(fn, wrapper)
-{
-    return function() {
-        return function() {
-            var result = null;
-            // https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Functions/arguments
-            var args = Array.prototype.slice.call(arguments, 0); // clone arguments to array
-            args.push(wrapper.bind(null, function(data) {
-                result = data;
-            }));
-            fn.apply(this, args);
-
-            while (!result) {
-                deasync.runLoopOnce();
+        for (var i = 0; i < arrProperty.length; i++)
+        {
+            if (!(object[arrProperty[i]] instanceof Function))
+            {
+                throw new Error('param is not a function');
             }
 
-            return result;
+            // use getter to wrap function in wrapper
+            object.__defineGetter__(
+                arrProperty[i],
+                getter(object[arrProperty[i]], wrapper)
+                );
+        }
+
+        return object;
+    };
+
+    function getter(fn, wrapper)
+    {
+        return function() {
+            return function() {
+                var result = null;
+                // https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Functions/arguments
+                var args = Array.prototype.slice.call(arguments, 0); // clone arguments to array
+                args.push(wrapper.bind(null, function(data) {
+                    result = data;
+                }));
+                fn.apply(this, args);
+
+                while (!result) {
+                    deasync.runLoopOnce();
+                }
+
+                return result;
+            };
+        };
+    }
+
+    Helper_Function.wrapperErrRes = function(callback, err, res)
+    {
+        callback({
+            err: err,
+            res: res
+        });
+    };
+
+    Helper_Function.wrapperRes = function(callback, res)
+    {
+        callback(res);
+    };
+
+    Helper_Function.once = function(fn)
+    {
+        var flag = false;
+        return function () {
+            if (!flag)
+            {
+                flag = true;
+                return fn.apply(this, arguments);
+            }
         };
     };
-}
 
-function wrapperErrRes(callback, err, res)
-{
-    callback({
-        err: err,
-        res: res
-    });
-}
-
-function wrapperRes(callback, res)
-{
-    callback(res);
-}
-
-module.exports = {
-    toSyncMode: toSyncMode,
-    wrapperErrRes: wrapperErrRes,
-    wrapperRes: wrapperRes
-};
+    return Helper_Function;
+}();
+    

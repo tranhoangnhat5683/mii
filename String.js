@@ -21,31 +21,30 @@ module.exports = function() {
         return Helper_Regex;
     }
 
-    var StringHelper = {};
-
-    StringHelper.formatLength = function(str, length, options)
+    var Helper_String = {};
+    Helper_String.formatLength = function(str, length, options)
     {
         str += (new Array(length + 1).join(' '));
         return str.slice(0, length);
     };
 
-    StringHelper.formatString = function(str)
+    Helper_String.formatString = function(str)
     {
-        if (!StringHelper.entities)
+        if (!Helper_String.entities)
         {
             var Entities = require('html-entities').AllHtmlEntities;
-            StringHelper.entities = new Entities();
+            Helper_String.entities = new Entities();
         }
 
-        if (!StringHelper.unorm)
+        if (!Helper_String.unorm)
         {
-            StringHelper.unorm = require('unorm');
+            Helper_String.unorm = require('unorm');
         }
 
-        return StringHelper.unorm.nfc(StringHelper.entities.decode(str));
+        return Helper_String.unorm.nfc(Helper_String.entities.decode(str));
     };
 
-    StringHelper.createEmptyWord = function(length, character)
+    Helper_String.createEmptyWord = function(length, character)
     {
         if (!character)
         {
@@ -59,7 +58,7 @@ module.exports = function() {
         return word;
     };
 
-    StringHelper.createRepeatString = function(length, word, separator)
+    Helper_String.createRepeatString = function(length, word, separator)
     {
         if (!word)
         {
@@ -77,7 +76,7 @@ module.exports = function() {
         return words.join(separator);
     };
 
-    StringHelper.isJson = function(str)
+    Helper_String.isJson = function(str)
     {
         try
         {
@@ -91,7 +90,7 @@ module.exports = function() {
         return true;
     };
 
-    StringHelper.haveCharacterInText = function(start, end, text)
+    Helper_String.haveCharacterInText = function(start, end, text)
     {
         var regCharater = /\,|\;/gi;
         var str = text.substring(start, end);
@@ -103,7 +102,7 @@ module.exports = function() {
         return false;
     };
 
-    StringHelper.splitToParagraphs = function(str, separator)
+    Helper_String.splitToParagraphs = function(str, separator)
     {
         if (!separator)
         {
@@ -122,7 +121,7 @@ module.exports = function() {
      | 2. Sentence da duoc clean tu truoc: remove html, format, ...
      |----------------------------------------------------------
      */
-    StringHelper.splitToSentence = function(str, separator)
+    Helper_String.splitToSentence = function(str, separator)
     {
         if (!separator)
         {
@@ -133,13 +132,13 @@ module.exports = function() {
         return arrayHelper().clean(sentences);
     };
 
-    StringHelper.splitToSentenceWithoutMarks = function(str)
+    Helper_String.splitToSentenceWithoutMarks = function(str)
     {
         var sentences = str.split(regexHelper().sentencesSeparatorWithoutBracketReg);
         return arrayHelper().clean(sentences);
     };
 
-    StringHelper.splitToWord = function(str, separator)
+    Helper_String.splitToWord = function(str, separator)
     {
         if (!separator)
         {
@@ -150,35 +149,35 @@ module.exports = function() {
         return arrayHelper().clean(words);
     };
 
-    StringHelper.removeHtmlTag = function(str)
+    Helper_String.removeHtmlTag = function(str)
     {
         return str.replace(/(<([^>]+)>)/ig, "");
     };
 
-    StringHelper.getLengthByWord = function(str)
+    Helper_String.getLengthByWord = function(str)
     {
-        return StringHelper.splitToWord(str).length;
+        return Helper_String.splitToWord(str).length;
     };
 
-    StringHelper.detectLanguage = function(text, format) // options prop format
+    Helper_String.detectLanguage = function(text, format) // options prop format
     {
         if (!format)
         {
             format = 'iso2';
         }
 
-        if (!StringHelper.languageDetect)
+        if (!Helper_String.languageDetect)
         {
-            StringHelper.languageDetect = {};
+            Helper_String.languageDetect = {};
         }
 
-        if (!StringHelper.languageDetect[format])
+        if (!Helper_String.languageDetect[format])
         {
             var LanguageDetect = require('languagedetect');
-            StringHelper.languageDetect[format] = new LanguageDetect(format);
+            Helper_String.languageDetect[format] = new LanguageDetect(format);
         }
 
-        var arrLanguages = StringHelper.languageDetect[format].detect(text, 2);
+        var arrLanguages = Helper_String.languageDetect[format].detect(text, 2);
         var lang = null;
         for (var i = 0; i < arrLanguages.length; i++)
         {
@@ -192,7 +191,7 @@ module.exports = function() {
         return 'un';
     };
 
-    StringHelper.convertUnicodeToAscii = function(str)
+    Helper_String.convertUnicodeToAscii = function(str)
     {
         if (!str) {
             return str;
@@ -216,7 +215,7 @@ module.exports = function() {
         return str;
     };
 
-    StringHelper.getFrom = function(str, startToken, endToken)
+    Helper_String.getFrom = function(str, startToken, endToken)
     {
         var start = str.indexOf(startToken) + startToken.length;
         if (start < startToken.length)
@@ -229,7 +228,7 @@ module.exports = function() {
         return lastHalf.substring(0, end);
     };
 
-    StringHelper.getFromAll = function(str, startToken, endToken) {
+    Helper_String.getFromAll = function(str, startToken, endToken) {
         var result = [];
         while (str.indexOf(startToken) >= 0)
         {
