@@ -239,5 +239,5 @@ module.exports = function() {
         return result;
     };
 
-    return arrayHelper;
+    return Helper_String;
 }();
