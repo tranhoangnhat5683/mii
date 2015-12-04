@@ -6,7 +6,7 @@ module.exports = function() {
     {
         if (!wrapper)
         {
-            wrapper = wrapperErrRes;
+            wrapper = Helper_Function.wrapperErrRes;
         }
 
         for (var i = 0; i < arrProperty.length; i++)
