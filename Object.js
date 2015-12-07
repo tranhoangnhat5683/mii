@@ -1,30 +1,29 @@
-var ObjectHelper = function()
-{
+module.exports = (function() {
+    var Helper_Object = {};
 
-};
-
-ObjectHelper.clone = function(object)
-{
-    return JSON.parse(JSON.stringify(object));
-};
-
-ObjectHelper.objectToArray = function(object)
-{
-    var result = [];
-    for (var key in object)
+    Helper_Object.clone = function(object)
     {
-        result.push(object[key]);
-    }
+        return JSON.parse(JSON.stringify(object));
+    };
 
-    return result;
-};
-
-ObjectHelper.merge = function(dest, source)
-{
-    for(var prop in source)
+    Helper_Object.objectToArray = function(object)
     {
-        dest[prop] = source[prop];
-    }
-};
+        var result = [];
+        for (var key in object)
+        {
+            result.push(object[key]);
+        }
 
-module.exports = ObjectHelper;
+        return result;
+    };
+
+    Helper_Object.merge = function(dest, source)
+    {
+        for (var prop in source)
+        {
+            dest[prop] = source[prop];
+        }
+    };
+
+    return Helper_Object;
+})();

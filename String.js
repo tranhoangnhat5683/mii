@@ -1,6 +1,8 @@
-module.exports = function() {
-    var Helper_Array = null;
-    var Helper_Regex = null;
+module.exports = (function() {
+    var Helper_Array    = null;
+    var Helper_Regex    = null;
+    var Helper_String   = {};
+
     function arrayHelper()
     {
         if (!Helper_Array)
@@ -21,7 +23,6 @@ module.exports = function() {
         return Helper_Regex;
     }
 
-    var Helper_String = {};
     Helper_String.formatLength = function(str, length, options)
     {
         str += (new Array(length + 1).join(' '));
@@ -240,4 +241,4 @@ module.exports = function() {
     };
 
     return Helper_String;
-}();
+})();
