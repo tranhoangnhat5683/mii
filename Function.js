@@ -105,11 +105,9 @@ module.exports = function() {
 
     Helper_Function.cache = function(fn)
     {
-        var cache = null;
-        var flag = false;
         var _fn = function() {
-            if (flag) { // Function has call before
-                if (!cache) { // But not done yet.
+            if (this.mii_function_cache_flag) { // Function has call before
+                if (!this.mii_function_cache) { // But not done yet.
                     var argv = Array.prototype.slice.call(arguments);
                     // Then delay 50ms to try again.
                     setTimeout(function() {
@@ -119,26 +117,26 @@ module.exports = function() {
                 }
 
                 var key = getCallbackKeyFromArgv(arguments);
-                arguments[key](cache.err, cache.res);// callback using cache
+                arguments[key](this.mii_function_cache.err, this.mii_function_cache.res);// callback using cache
                 return;
             }
 
-            if (!flag) // Function have not call yet.
+            if (!this.mii_function_cache_flag) // Function have not call yet.
             {
                 // Then call it:
-                flag = true;
+                this.mii_function_cache_flag = true;
                 var key = getCallbackKeyFromArgv(arguments);
                 var callback = arguments[key];
 
                 var argv = Array.prototype.slice.call(arguments);
                 argv[key] = function(err, res) {
-                    cache = {
+                    this.mii_function_cache = {
                         err: err,
                         res: res
                     };
 
                     callback(err, res);
-                };
+                }.bind(this);
 
                 return fn.apply(this, argv);
             }
