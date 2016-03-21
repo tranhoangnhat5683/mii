@@ -1,3 +1,5 @@
+/* global Function */
+
 module.exports = function() {
     var deasync = require('deasync');
 
@@ -63,7 +65,7 @@ module.exports = function() {
     Helper_Function.once = function(fn)
     {
         var flag = false;
-        return function () {
+        return function() {
             if (!flag)
             {
                 flag = true;
@@ -71,6 +73,56 @@ module.exports = function() {
             }
         };
     };
+
+    Helper_Function.cache = function(fn)
+    {
+        var cache = null;
+        var flag = false;
+        return function _fn() {
+            if (flag) { // Function has call before
+                if (!cache) { // But not done yet.
+                    var args = Array.prototype.slice.call(arguments);
+                    // Then delay 50ms to try again.
+                    setTimeout(function() {
+                        _fn.apply(this, args);
+                    }.bind(this), 50);
+                    return;
+                }
+
+                var key = getCallbackKeyFromArgv(arguments);
+                arguments[key](cache.err, cache.res);// callback using cache
+                return;
+            }
+
+            if (!flag) // Function have not call yet.
+            {
+                // Then call it:
+                flag = true;
+                var key = getCallbackKeyFromArgv(arguments);
+                callback = arguments[key];
+                arguments[key] = function(err, res) {
+                    cache = {
+                        err: err,
+                        res: res
+                    };
+
+                    callback(err, res);
+                };
+
+                return fn.apply(this, arguments);
+            }
+        };
+    };
+
+    function getCallbackKeyFromArgv(argv) {
+        for (var key in argv) {
+            if (argv[key] instanceof Function) {
+                return key;
+            }
+        }
+
+        throw new Error('Can not found callback');
+    }
 
     return Helper_Function;
 }();

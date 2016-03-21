@@ -12,16 +12,27 @@ module.exports = (function() {
         return Helper_Object;
     }
 
-    Helper_Array.clean = function(arr)
+    Helper_Array.clean = function(arr, property)
     {
         var newArr = [];
         for (var i = 0; i < arr.length; i++)
         {
-            if (arr[i])
+            if (property)
             {
-                newArr.push(arr[i]);
+                if (arr[i] && arr[i].property)
+                {
+                    newArr.push(arr[i]);
+                }
+            }
+            else
+            {
+                if (arr[i])
+                {
+                    newArr.push(arr[i]);
+                }
             }
         }
+
         return newArr;
     };
 
@@ -55,6 +66,15 @@ module.exports = (function() {
         return objectHelper().objectToArray(unique);
     };
 
+    /**
+     * Get property of each element in array to create a new array.
+     * @param {Array} arr
+     * @param {String} [prop]
+     * @param {Object} [options]
+     * @param {Boolean} [options.clean] - remove empty value from result.
+     * @param {Boolean} [options.unique] - remove dup from result.
+     * @returns {Array}
+     */
     Helper_Array.get = function(arr, prop, options)
     {
         if (!options)
@@ -65,11 +85,17 @@ module.exports = (function() {
         var newArr = [];
         for (var i = 0; i < arr.length; i++)
         {
-            if (options.removeEmptyElement && !arr[i][prop])
-            {
-                continue;
-            }
             newArr.push(arr[i][prop]);
+        }
+
+        if (options.clean)
+        {
+            newArr = Helper_Array.clean(newArr);
+        }
+
+        if (options.unique)
+        {
+            newArr = Helper_Array.unique(newArr);
         }
 
         return newArr;
