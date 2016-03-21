@@ -74,6 +74,35 @@ module.exports = function() {
         };
     };
 
+    Helper_Function.single = function(fn)
+    {
+        var flag = false;
+        var _fn = function() {
+            if (flag) { // Function is already running.
+                var argv = Array.prototype.slice.call(arguments);
+                // Then delay 50ms to try again.
+                setTimeout(function() {
+                    _fn.apply(this, argv);
+                }.bind(this), 50);
+                return;
+            }
+
+            flag = true;
+            var key = getCallbackKeyFromArgv(arguments);
+            var callback = arguments[key];
+
+            var argv = Array.prototype.slice.call(arguments);
+            argv[key] = function(err, res) {
+                flag = false;
+                callback(err, res);
+            };
+
+            return fn.apply(this, argv);
+        };
+
+        return _fn;
+    };
+
     Helper_Function.cache = function(fn)
     {
         var cache = null;
@@ -119,13 +148,18 @@ module.exports = function() {
     };
 
     function getCallbackKeyFromArgv(argv) {
-        for (var key in argv) {
+        var result = null;
+        for (var key in argv) { // travel all of argv, and get last function.
             if (argv[key] instanceof Function) {
-                return key;
+                result = key;
             }
         }
 
-        throw new Error('Can not found callback');
+        if (!result) {
+            throw new Error('Can not found callback');
+        }
+
+        return result;
     }
 
     return Helper_Function;
