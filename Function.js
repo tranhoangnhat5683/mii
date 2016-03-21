@@ -78,13 +78,13 @@ module.exports = function() {
     {
         var cache = null;
         var flag = false;
-        return function _fn() {
+        var _fn = function() {
             if (flag) { // Function has call before
                 if (!cache) { // But not done yet.
-                    var args = Array.prototype.slice.call(arguments);
+                    var argv = Array.prototype.slice.call(arguments);
                     // Then delay 50ms to try again.
                     setTimeout(function() {
-                        _fn.apply(this, args);
+                        _fn.apply(this, argv);
                     }.bind(this), 50);
                     return;
                 }
@@ -99,8 +99,10 @@ module.exports = function() {
                 // Then call it:
                 flag = true;
                 var key = getCallbackKeyFromArgv(arguments);
-                callback = arguments[key];
-                arguments[key] = function(err, res) {
+                var callback = arguments[key];
+
+                var argv = Array.prototype.slice.call(arguments);
+                argv[key] = function(err, res) {
                     cache = {
                         err: err,
                         res: res
@@ -109,9 +111,11 @@ module.exports = function() {
                     callback(err, res);
                 };
 
-                return fn.apply(this, arguments);
+                return fn.apply(this, argv);
             }
         };
+
+        return _fn;
     };
 
     function getCallbackKeyFromArgv(argv) {
@@ -126,4 +130,3 @@ module.exports = function() {
 
     return Helper_Function;
 }();
-    
