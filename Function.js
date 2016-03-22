@@ -2,6 +2,7 @@
 
 module.exports = function() {
     var deasync = require('deasync');
+    var shortid = require('shortid');
 
     var Helper_Function = {};
     Helper_Function.toSyncMode = function(object, arrProperty, wrapper)
@@ -105,9 +106,17 @@ module.exports = function() {
 
     Helper_Function.cache = function(fn)
     {
+        var uniqueId = shortid.generate();
         var _fn = function() {
-            if (this.mii_function_cache_flag) { // Function has call before
-                if (!this.mii_function_cache) { // But not done yet.
+            if (!this.mii_function_cache) {
+                this.mii_function_cache = {};
+            }
+            if (!this.mii_function_cache_flag) {
+                this.mii_function_cache_flag = {};
+            }
+
+            if (this.mii_function_cache_flag[uniqueId]) { // Function has call before
+                if (!this.mii_function_cache[uniqueId]) { // But not done yet.
                     var argv = Array.prototype.slice.call(arguments);
                     // Then delay 50ms to try again.
                     setTimeout(function() {
@@ -117,20 +126,20 @@ module.exports = function() {
                 }
 
                 var key = getCallbackKeyFromArgv(arguments);
-                arguments[key](this.mii_function_cache.err, this.mii_function_cache.res);// callback using cache
+                arguments[key](this.mii_function_cache[uniqueId].err, this.mii_function_cache[uniqueId].res);// callback using cache
                 return;
             }
 
-            if (!this.mii_function_cache_flag) // Function have not call yet.
+            if (!this.mii_function_cache_flag[uniqueId]) // Function have not call yet.
             {
                 // Then call it:
-                this.mii_function_cache_flag = true;
+                this.mii_function_cache_flag[uniqueId] = true;
                 var key = getCallbackKeyFromArgv(arguments);
                 var callback = arguments[key];
 
                 var argv = Array.prototype.slice.call(arguments);
                 argv[key] = function(err, res) {
-                    this.mii_function_cache = {
+                    this.mii_function_cache[uniqueId] = {
                         err: err,
                         res: res
                     };
