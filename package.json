@@ -9,6 +9,7 @@
     "author": "Just4Fun <tranhoangnhat5683@gmail.com>",
     "license": "ISC",
     "dependencies": {
-        "deasync": "latest"
+        "deasync": "latest",
+        "shortid": "latest"
     }
 }
